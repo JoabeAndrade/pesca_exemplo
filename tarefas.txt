@@ -1,0 +1,3 @@
+1 - Alterar para o novo padrão de URLs: Onde tem municipios/ será alterado para pescadores/
+2 - Preparar os testes para municipios
+3 - Fazer referência dos estados no CRUD municipios
