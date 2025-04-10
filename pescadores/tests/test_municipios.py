@@ -1,5 +1,7 @@
 from django.test import TestCase, Client
 from pescadores.models import Uf, Municipio
+from django.urls import reverse
+from rest_framework import status
 from unittest import skip
 import json
 
@@ -11,8 +13,8 @@ class MunicipioViewTest(TestCase):
     # GET /pescadores/municipios/
     def test_list_municipios(self):
         self.create_municipios()
-        response = self.client.get('/pescadores/municipios/')
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('pescadores:municipio_list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json(), {
             "municipios": [
                 {'id': 1, 'nome': 'Salvador', 'uf': 1},
@@ -23,8 +25,8 @@ class MunicipioViewTest(TestCase):
         })
 
     def test_list_municipios_empty(self):
-        response = self.client.get('/pescadores/municipios/')
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('pescadores:municipio_list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json(), {
             "municipios": []
         })
@@ -33,15 +35,15 @@ class MunicipioViewTest(TestCase):
     def test_create_municipio(self):
         estado = Uf.objects.create(nome="Bahia", sigla="BA")
         new_municipio = {'nome': 'Ilhéus', 'uf': estado.id}
-        response = self.client.post('/pescadores/municipios/', data=json.dumps(new_municipio), content_type='application/json')
-        self.assertEqual(response.status_code, 201)
+        response = self.client.post(reverse('pescadores:municipio_list'), data=json.dumps(new_municipio), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.json(), {
             "municipio": {'id': 1, 'nome': 'Ilhéus', 'uf': estado.id}
         })
 
     def test_create_municipio_empty(self):
-        response =  self.client.post('/pescadores/municipios/', content_type='aplication/json')
-        self.assertEqual(response.status_code, 400)
+        response =  self.client.post(reverse('pescadores:municipio_list'), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     # PUT /pescadores/municipios/
     # def test_put_municipios(self):
@@ -49,13 +51,13 @@ class MunicipioViewTest(TestCase):
     # DELETE /pescadores/municipios/x/
     def test_delete_municipio(self):
         self.create_municipios()
-        response = self.client.delete('/pescadores/municipios/1/')
-        self.assertEqual(response.status_code, 204)
+        response = self.client.delete(reverse('pescadores:municipio_detail', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_municipio_not_exist(self):
         self.create_municipios()
-        response = self.client.delete('/pescadores/municipios/12/')
-        self.assertEqual(response.status_code, 404)
+        response = self.client.delete(reverse('pescadores:municipio_detail', kwargs={'pk': 12}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def create_municipios(self):
         ba = Uf.objects.create(nome='Bahia', sigla='BA')
