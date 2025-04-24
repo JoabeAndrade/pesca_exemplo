@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pescadores',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -76,8 +77,16 @@ WSGI_APPLICATION = 'pesca_setup.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mssql',      # ou 'sql_server.pyodbc'
+        'NAME': 'rachycentron',
+        'USER': 'sa',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',    # ou 'localhost\\SQLEXPRESS'
+        'PORT': '',             # normalmente vazio para instância padrão
+        'OPTIONS': {            # CORRETO: sem typo
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'trusted_connection': 'yes',
+        },
     }
 }
 
